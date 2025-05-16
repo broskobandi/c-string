@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/bandigame/projects/c-string/tests/system/build",
+  "command": "/usr/bin/cc   -Wall -Wextra -Werror -Wconversion -Wunused-result -o CMakeFiles/SYSTEM_TEST.dir/system_test.c.o -c /home/bandigame/projects/c-string/tests/system/system_test.c",
+  "file": "/home/bandigame/projects/c-string/tests/system/system_test.c",
+  "output": "CMakeFiles/SYSTEM_TEST.dir/system_test.c.o"
+},
+{
+  "directory": "/home/bandigame/projects/c-string/tests/system/build",
+  "command": "/usr/bin/cc   -Wall -Wextra -Werror -Wconversion -Wunused-result -o CMakeFiles/SYSTEM_TEST.dir/home/bandigame/projects/c-string/src/string.c.o -c /home/bandigame/projects/c-string/src/string.c",
+  "file": "/home/bandigame/projects/c-string/src/string.c",
+  "output": "CMakeFiles/SYSTEM_TEST.dir/home/bandigame/projects/c-string/src/string.c.o"
+}
+]
