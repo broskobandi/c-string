@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/UNIT_TESTS.dir/unit_tests.c.o "CMakeFiles/UNIT_TESTS.dir/home/bandigame/projects/c-string/src/string.c.o" -o UNIT_TESTS
