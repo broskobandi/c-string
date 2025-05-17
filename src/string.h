@@ -1,8 +1,6 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdbool.h>
 
 #ifdef __GNUC__
@@ -24,7 +22,7 @@ struct string {
 	char (*at)(const string_t *self, unsigned int index);
 	//Returns length of string data
 	int (*len)(const string_t *self);
-	//Returns length of capacity of string object
+	//Returns capacity of string object
 	int (*capacity)(const string_t *self);
 
 	//Removes and returns last character in the string data

@@ -1,7 +1,7 @@
 #include "../../src/string.h"
 #include <stdbool.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef struct tests {
 	unsigned int completed;

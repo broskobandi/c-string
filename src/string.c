@@ -1,7 +1,6 @@
 #include "string.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 bool _is_string_destroyed = false;
 bool _is_cstring_destroyed = false;
