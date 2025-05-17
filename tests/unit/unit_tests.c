@@ -105,14 +105,13 @@ void test_cat(tests_t *tests) {
 	string->cat(string, other_string);
 	AUTO_CSTRING *new_string = string->cstring(string);
 	ASSERT(strcmp(new_string, "Some textsometext") == 0);
-	printf("%s\n", new_string);
 }
 
 void test_push(tests_t *tests) {
 	AUTO_STRING *string = create_string();
 	string->push(string, 'a');
-	char a = 'a';
-	ASSERT(a == 'a');
+	char c = string->pop(string);
+	ASSERT(c == 'a');
 }
 
 void test_remove_at(tests_t *tests) {
