@@ -130,7 +130,7 @@ void test_set(tests_t *tests) {
 
 void test__expand_string_data(tests_t *tests) {
 	string_t *string = create_string();
-	for (int i = 1; i < 130; i++) {
+	for (int i = 0; i < 130; i++) {
 		string->push(string, 'a');
 		if (string->len(string) < 16)
 			if (string->capacity(string) != 16) {ASSERT(false)}
