@@ -97,6 +97,10 @@ void test_pop(tests_t *tests) {
 	AUTO_STRING *string = create_string_from("Some text");
 	char c = string->pop(string);
 	ASSERT(c == 't');
+	//test for overpopping
+	for (int i = 0; i < 500; i++) {
+		string->pop(string);
+	}
 }
 
 void test_cat(tests_t *tests) {

@@ -141,6 +141,7 @@ static int capacity(const string_t *self) {
 static char pop(string_t *self) {
 	if (!self) return -1;
 	string_priv_t *p = self->priv;
+	if (p->len < 1) return -1;
 	unsigned long len = p->len;
 	char last_char = p->data[len - 1];
 	p->data[len - 1] = '\0';
