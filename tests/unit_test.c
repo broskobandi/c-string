@@ -45,17 +45,25 @@ int test_new_from_and_data() {
 	if (strcmp(data, STR_DATA(str)) != 0) return 1;
 	return 0;
 }
-//
-// int test_new_from_file() {
-// 	const char *path = "../CMakeLists.txt";
-// 	STR_AUTO_T *str = STR_NEW_FROM_FILE("../CMakeLists.txt");
-// 	char file_content[512];
-// 	char c;
-// 	FILE *file = 
-// 	while ((c = fgetc()))
-// 	printf("%s\n", STR_DATA(str));
-// 	return 0;
-// }
+
+int test_new_from_file() {
+	const char *path = "../CMakeLists.txt";
+	STR_AUTO_T *str = STR_NEW_FROM_FILE("../CMakeLists.txt");
+	char file_content[512];
+	char c;
+	FILE *file = fopen(path, "r");
+	if (!file) return 1;
+	int i = 0;
+	while ((c = (char)fgetc(file)) != EOF) {
+		file_content[i] = c;
+		i++;
+	}
+	file_content[i] = '\0';
+	if (strcmp(file_content, STR_DATA(str)) != 0) return 1;
+	printf("%s\n", file_content);
+	fclose(file);
+	return 0;
+}
 
 int test_cat() {
 	const char *data1 = "Some ";
@@ -102,7 +110,7 @@ int main(void) {
 
 	ASSERT(test_new_and_destroy() == 0);
 	ASSERT(test_new_from_and_data() == 0);
-	// ASSERT(test_new_from_file() == 0);
+	ASSERT(test_new_from_file() == 0);
 	ASSERT(test_cat() == 0);
 	ASSERT(test_replace() == 0);
 	ASSERT(test_push_and_pop() == 0);

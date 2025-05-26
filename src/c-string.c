@@ -54,23 +54,23 @@ int str_new_from(str_t **str, const char *data) {
 	return 0;
 }
 
-// int str_new_from_file(str_t **str, const char *file) {
-// 	if (*str) return 1;
-//
-// 	FILE *src_file = fopen(file, "r");
-// 	if (!src_file) return 1;
-//
-// 	if (str_new(str)) return 1;
-//
-// 	char c;
-// 	while ((c = (char)fgetc(src_file)) != EOF) {
-// 		if ((*str)->push(*str, c)) return 1;
-// 	}
-//
-// 	fclose(src_file);
-//
-// 	return 0;
-// }
+int str_new_from_file(str_t **str, const char *file) {
+	if (*str) return 1;
+
+	FILE *src_file = fopen(file, "r");
+	if (!src_file) return 1;
+
+	if (str_new(str)) return 1;
+
+	char c;
+	while ((c = (char)fgetc(src_file)) != EOF) {
+		if ((*str)->push(*str, c)) return 1;
+	}
+
+	fclose(src_file);
+
+	return 0;
+}
 
 int is_str_destroyed = 0;
 void str_destroy(str_t **str) {
