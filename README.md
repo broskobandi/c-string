@@ -1,6 +1,12 @@
 # c-string
 Dynamic string for C that aims to be type and memory safe.
 
+## Requirements
+For installation ensure cmake and git is installed.
+To use the macro wrappers supplied by the library, gcc or clang is required.
+Information regarding how to use the library without the macro wrappers can be
+found below.
+
 ## Installation
 Clone and cd into the repository:
 ```bash
@@ -18,9 +24,10 @@ Compile and install library:
 make && sudo make install
 ```
 
-## Basic usage
+## Basic usage - no macros
 Write a test program.
 Each function returns a status code of either 0 (on success), or 1 (on failure).
+Getter functions work via out aprameters.
 ```c
 //main.c
 #include <c-string.h>
@@ -57,6 +64,8 @@ Write test program.
 The macro wrappers implicitly carry out error propagation by
 automatically exiting the caller function with status code 1
 upon failure.
+Getter macros return the desired data directly.
+The macro wrappers can only be used when using gcc or clang compilers.
 
 ```c
 //main.c
