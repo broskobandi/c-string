@@ -1,2 +1,0 @@
-/usr/local/lib/libc-string.a
-/usr/local/include/c-string.h

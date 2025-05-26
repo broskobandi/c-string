@@ -12,12 +12,14 @@
 #ifndef C_STRING_H
 #define C_STRING_H
 
+#include <stdlib.h>
+
 /** This ensures that warning is always issued when the function's
  * return value is ignored. Required GCC or clang. */
 #ifdef __GNUC__
-#define MUST_USE_RESULT __attribute__((warn_unused_result))
+#define STR_MUST_USE_RESULT __attribute__((warn_unused_result))
 #else
-#define MUST_USE_RESULT
+#define STR_MUST_USE_RESULT
 #endif
 
 /** String object */
@@ -30,40 +32,40 @@ struct str {
 	/** Declaration of funcion pointers: */
 
 	/** Saves a const pointer to string data in 'data' */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*data)(const str_t *self, const char **data);
 
 	/** Appends 'src' at the end of string data */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*cat)(str_t *self, const str_t *src);
 
 	/** Replaces all occurrences of 'old_str' with 'new_str' */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*replace)(str_t *self, const char *old_str, const char *new_str);
 
 	/** Appends 'c' at the end of string data */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*push)(str_t *self, char c);
 
 	/** Removes last char and saves it in 'c' */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*pop)(str_t *self, char *c);
 
 	/** Saves the length of string data in 'len' */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*len)(const str_t *self, unsigned long *len);
 
 	/** Saves the capacity of string data in 'capacity' */
-	MUST_USE_RESULT
+	STR_MUST_USE_RESULT
 	int (*capacity)(const str_t *self, unsigned long *capacity);
 };
 
 /** Creates a new instance of str_t. str must be NULL */
-MUST_USE_RESULT
+STR_MUST_USE_RESULT
 int str_new(str_t **str);
 /** Creates a new instance of str_t with the content of data.
  * 'str' must be NULL */
-MUST_USE_RESULT
+STR_MUST_USE_RESULT
 int str_new_from(str_t **str, const char *data);
 extern int is_str_destroyed;
 /* Frees up all memory allocated in str object */

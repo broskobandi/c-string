@@ -1,7 +1,7 @@
 CMakeFiles/c-string.dir/src/c-string.c.o: \
  /home/bandigame/projects/c-string/src/c-string.c \
  /usr/include/stdc-predef.h \
- /home/bandigame/projects/c-string/include/c-string.h \
+ /home/bandigame/projects/c-string/src/../include/c-string.h \
  /usr/include/stdlib.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \

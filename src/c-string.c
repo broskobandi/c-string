@@ -10,7 +10,7 @@
  */
 
 // #include "../include/c-string.h"
-#include "c-string.h"
+#include "../include/c-string.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -28,9 +28,9 @@ static int push(str_t *self, char c);
 static int pop(str_t *self, char *c);
 static int len(const str_t *self, unsigned long *len);
 static int capacity(const str_t *self, unsigned long *capacity);
-MUST_USE_RESULT
+STR_MUST_USE_RESULT
 int _alloc(str_t **str, unsigned long capacity);
-MUST_USE_RESULT
+STR_MUST_USE_RESULT
 int _realloc(str_t *str, unsigned long capacity);
 void _init_str(str_t *str, unsigned long capacity, unsigned long len);
 
