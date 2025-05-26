@@ -1,2 +1,0 @@
-/usr/bin/ar qc libc-string.a "CMakeFiles/c-string.dir/src/c-string.c.o"
-/usr/bin/ranlib libc-string.a

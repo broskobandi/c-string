@@ -1,3 +1,0 @@
-/home/bandigame/projects/c-string/tests/build/CMakeFiles/unit_test.dir
-/home/bandigame/projects/c-string/tests/build/CMakeFiles/edit_cache.dir
-/home/bandigame/projects/c-string/tests/build/CMakeFiles/rebuild_cache.dir
