@@ -72,13 +72,18 @@ struct str {
  * Returns 0 on success and 1 on failure. */
 STR_MUST_USE_RESULT
 int str_new(str_t **str);
-/** Creates a new instance of str_t with the content of data.
+/** Creates a new instance of str_t with the content of 'data'.
  * 'str' must be NULL.
  * Returns 0 on success and 1 on failure. */
 STR_MUST_USE_RESULT
 int str_new_from(str_t **str, const char *data);
+/** Creates a new instance of str_t with the content of 'file'.
+ * 'str' must be NULL.
+ * Returns 0 on success and 1 on failure. */
+// STR_MUST_USE_RESULT
+// int str_new_from_file(str_t **str, const char *file);
 extern int is_str_destroyed;
-/* Frees up all memory allocated in str object. */
+/** Frees up all memory allocated in str object. */
 void str_destroy(str_t **str);
 
 
@@ -107,6 +112,13 @@ void str_destroy(str_t **str);
 	({\
 	 	str_t *str = NULL;\
 		if (str_new_from(&str, data)) return 1;\
+		str;\
+	 })
+#define STR_NEW_FROM_FILE(file)\
+/** Returns a new str_t instance or exits the caller  with status code 1 on failure */\
+	({\
+	 	str_t *str = NULL;\
+		if (str_new_from_file(&str, file)) return 1;\
 		str;\
 	 })
 #define STR_DATA(str)\

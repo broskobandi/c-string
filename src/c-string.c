@@ -12,6 +12,7 @@
 #include "../include/c-string.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 struct str_priv {
 	char *data;
@@ -53,6 +54,24 @@ int str_new_from(str_t **str, const char *data) {
 	return 0;
 }
 
+// int str_new_from_file(str_t **str, const char *file) {
+// 	if (*str) return 1;
+//
+// 	FILE *src_file = fopen(file, "r");
+// 	if (!src_file) return 1;
+//
+// 	if (str_new(str)) return 1;
+//
+// 	char c;
+// 	while ((c = (char)fgetc(src_file)) != EOF) {
+// 		if ((*str)->push(*str, c)) return 1;
+// 	}
+//
+// 	fclose(src_file);
+//
+// 	return 0;
+// }
+
 int is_str_destroyed = 0;
 void str_destroy(str_t **str) {
 	if (str && *str) {
@@ -72,7 +91,7 @@ void str_destroy(str_t **str) {
 
 int _alloc(str_t **str, unsigned long capacity) {
 	*str = (str_t*)calloc(1, sizeof(str_t));
-	if (!str) return 1;
+	if (!*str) return 1;
 	(*str)->priv = (str_priv_t*)calloc(1, sizeof(str_priv_t));
 	if (!(*str)->priv) {
 		free(*str);
@@ -191,7 +210,7 @@ static int push(str_t *self, char c) {
 	unsigned long *len = &self->priv->len;
 	unsigned long *capacity = &self->priv->capacity;
 
-	if ((*len)++ > *capacity) {
+	if ((*len) + 2 > *capacity) {
 		*capacity = (unsigned long)((float)*capacity * 1.5f);
 		if (_realloc(self, *capacity)) return 1;
 	}
