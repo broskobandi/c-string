@@ -70,6 +70,12 @@ int test_push_and_pop() {
 	return 0;
 }
 
+int test_pop_underflow() {
+	STR_AUTO_T *str = STR_NEW;
+	STR_POP(str);
+	return 0;
+}
+
 int test_len_and_capacity() {
 	const char *text = "Some text";
 	STR_AUTO_T *str = STR_NEW_FROM(text);
@@ -88,6 +94,7 @@ int main(void) {
 	ASSERT(test_str_cat() == 0);
 	ASSERT(test_str_replace() == 0);
 	ASSERT(test_push_and_pop() == 0);
+	ASSERT(test_pop_underflow() == 1);
 	ASSERT(test_len_and_capacity() == 0);
 
 	print_test_result(&test);
