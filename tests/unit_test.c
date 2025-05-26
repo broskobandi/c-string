@@ -105,6 +105,16 @@ int test_len_and_capacity() {
 	return 0;
 }
 
+int test_clear() {
+	STR_AUTO_T *str = STR_NEW_FROM("Some text");
+	unsigned long old_len = STR_LEN(str);
+	STR_CLEAR(str);
+	unsigned long new_len = STR_LEN(str);
+	if (old_len == new_len) return 1;
+	if (new_len != 0) return 1;
+	return 0;
+}
+
 int main(void) {
 	test_t test = {0};
 
@@ -116,6 +126,7 @@ int main(void) {
 	ASSERT(test_push_and_pop() == 0);
 	ASSERT(test_pop_underflow() == 1);
 	ASSERT(test_len_and_capacity() == 0);
+	ASSERT(test_clear() == 0);
 
 	print_test_result(&test);
 	return 0;

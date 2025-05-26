@@ -66,6 +66,11 @@ struct str {
 	 * Returns 0 on success and 1 on failure. */
 	STR_MUST_USE_RESULT
 	int (*capacity)(const str_t *self, unsigned long *capacity);
+
+	/** Clears the data stored in the string.
+	 * Returns 0 on success and 1 on failure. */
+	STR_MUST_USE_RESULT
+	int (*clear)(str_t *self);
 };
 
 /** Creates a new instance of str_t and saves it in 'str'.
@@ -173,7 +178,12 @@ void str_destroy(str_t **str);
 		if (str->capacity(str, &capacity)) return 1;\
 		capacity;\
 	 })
-
+#define STR_CLEAR(str)\
+/** Clears the data stored in the string or exits the caller with status code 1 on failure */\
+	do {\
+		if (!str) return 1;\
+		if (str->clear(str)) return 1;\
+	} while(0)
 #endif
 
 #endif

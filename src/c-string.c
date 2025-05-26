@@ -29,6 +29,7 @@ static int push(str_t *self, char c);
 static int pop(str_t *self, char *c);
 static int len(const str_t *self, unsigned long *len);
 static int capacity(const str_t *self, unsigned long *capacity);
+static int clear(str_t *self);
 STR_MUST_USE_RESULT
 int _alloc(str_t **str, unsigned long capacity);
 STR_MUST_USE_RESULT
@@ -124,6 +125,7 @@ void _init_str(str_t *str, unsigned long c, unsigned long l) {
 	str->push = push;
 	str->len = len;
 	str->capacity = capacity;
+	str->clear = clear;
 }
 
 // Definition for function pointers
@@ -272,5 +274,14 @@ static int len(const str_t *self, unsigned long *len) {
 static int capacity(const str_t *self, unsigned long *capacity) {
 	if (!self) return 1;
 	*capacity = self->priv->capacity;
+	return 0;
+}
+
+static int clear(str_t *self) {
+	if (!self) return 1;
+	memset(self->priv->data, 0, self->priv->len);
+	if (_realloc(self, DEFAULT_CAPACITY)) return 1;
+	self->priv->len = 0;
+	self->priv->capacity = DEFAULT_CAPACITY;
 	return 0;
 }
