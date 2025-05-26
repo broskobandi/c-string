@@ -69,8 +69,8 @@ int test_cat() {
 	const char *data1 = "Some ";
 	STR_AUTO_T *str1 = STR_NEW_FROM(data1);
 	const char *data2 = "text";
-	STR_AUTO_T *str2 = STR_NEW_FROM(data2);
-	STR_CAT(str1, str2);
+	// STR_AUTO_T *str2 = STR_NEW_FROM(data2);
+	STR_CAT(str1, data2);
 	if (strcmp(STR_DATA(str1), "Some text") != 0) return 1;
 	return 0;
 }

@@ -39,7 +39,8 @@ struct str {
 	/** Appends 'src' at the end of string data.
 	 * Returns 0 on success and 1 on failure. */
 	STR_MUST_USE_RESULT
-	int (*cat)(str_t *self, const str_t *src);
+	// int (*cat)(str_t *self, const str_t *src);
+	int (*cat)(str_t *self, const char *src);
 
 	/** Replaces all occurrences of 'old_str' with 'new_str'.
 	 * Returns 0 on success and 1 on failure. */
@@ -133,7 +134,7 @@ void str_destroy(str_t **str);
 #define STR_CAT(str, src)\
 /** Appends src at the end of str or exits the caller with status code 1 on failure */\
 	do {\
-		if (!str || !src) return 1;\
+		if (!str) return 1;\
 		if (str->cat(str, src)) return 1;\
 	} while(0)
 #define STR_REPLACE(str, old_str, new_str)\

@@ -22,7 +22,8 @@ struct str_priv {
 
 // Function forward declarations
 static int data(const str_t *self, const char **data);
-static int cat(str_t *self, const str_t *src);
+// static int cat(str_t *self, const str_t *src);
+static int cat(str_t *self, const char *src);
 static int replace(str_t *self, const char *old_str, const char *new_str);
 static int push(str_t *self, char c);
 static int pop(str_t *self, char *c);
@@ -133,25 +134,46 @@ static int data(const str_t *self, const char **data) {
 	return 0;
 }
 
-static int cat(str_t *self, const str_t *src) {
-	if (!self || !src) return 1;
-
+// static int cat(str_t *self, const str_t *src) {
+// 	if (!self || !src) return 1;
+//
+// 	unsigned long len = self->priv->len;
+// 	unsigned long capacity = self->priv->capacity;
+// 	unsigned long src_len = src->priv->len;
+// 	unsigned long new_len = len + src_len;
+// 	if (new_len + 1 > capacity) {
+// 		capacity = (unsigned long)((float)new_len * 1.5f);
+// 		if (_realloc(self, capacity)) return 1;
+// 	}
+// 	char *data = self->priv->data;
+// 	char *src_data = src->priv->data;
+//
+// 	memcpy(&data[len], src_data, sizeof(char) * src_len);
+// 	data[new_len] = '\0';
+//
+// 	self->priv->capacity = capacity;
+// 	self->priv->len = new_len;
+//
+// 	return 0;
+// }
+//
+static int cat(str_t *self, const char *src) {
+	if (!self) return 1;
 	unsigned long len = self->priv->len;
 	unsigned long capacity = self->priv->capacity;
-	unsigned long src_len = src->priv->len;
+	unsigned long src_len = strlen(src);
 	unsigned long new_len = len + src_len;
 	if (new_len + 1 > capacity) {
 		capacity = (unsigned long)((float)new_len * 1.5f);
 		if (_realloc(self, capacity)) return 1;
 	}
 	char *data = self->priv->data;
-	char *src_data = src->priv->data;
 
-	memcpy(&data[len], src_data, sizeof(char) * src_len);
+	memcpy(&data[len], src, sizeof(char) * src_len);
 	data[new_len] = '\0';
 
-	self->priv->capacity = capacity;
 	self->priv->len = new_len;
+	self->priv->capacity = capacity;
 
 	return 0;
 }
@@ -172,7 +194,8 @@ static int replace(str_t *self, const char *old_str, const char *new_str) {
 	}
 
 	*len = *len - (strlen(old_str) * count) + (strlen(new_str) * count);
-	char new_data[*len + 1];
+	//TODO:
+	char new_data[*len + 1]; // this should be dynamically allocated
 	int data_i = 0;
 	int new_data_i = 0;
 
