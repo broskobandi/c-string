@@ -149,8 +149,6 @@ void str_destroy(str_t **str);
 		capacity;\
 	 })
 
-#else
-#define MUST_USE_RESULT
 #endif
 
 #endif
