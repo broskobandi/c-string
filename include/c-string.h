@@ -71,6 +71,11 @@ struct str {
 	 * Returns 0 on success and 1 on failure. */
 	STR_MUST_USE_RESULT
 	int (*clear)(str_t *self);
+
+	/** Saves the character found at 'index' into 'c'.
+	 * Returns 0 on success and 1 on failure. */
+	STR_MUST_USE_RESULT
+	int (*get)(const str_t *self, char *c, unsigned long index);
 };
 
 /** Creates a new instance of str_t and saves it in 'str'.
@@ -184,6 +189,14 @@ void str_destroy(str_t **str);
 		if (!str) return 1;\
 		if (str->clear(str)) return 1;\
 	} while(0)
+#define STR_GET(str, index)\
+/** Returns character at 'index' or exits the caller with status code 1 on failure */\
+	({\
+	 	if (!str) return 1;\
+	 	char c = {};\
+		if (str->get(str, &c, index)) return 1;\
+		c;\
+	 })
 #endif
 
 #endif

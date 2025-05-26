@@ -115,6 +115,12 @@ int test_clear() {
 	return 0;
 }
 
+int test_get() {
+	STR_AUTO_T *str = STR_NEW_FROM("Some text");
+	if (STR_GET(str, 3) != 'e') return 1;
+	return 0;
+}
+
 int main(void) {
 	test_t test = {0};
 
@@ -127,6 +133,7 @@ int main(void) {
 	ASSERT(test_pop_underflow() == 1);
 	ASSERT(test_len_and_capacity() == 0);
 	ASSERT(test_clear() == 0);
+	ASSERT(test_get() == 0);
 
 	print_test_result(&test);
 	return 0;
