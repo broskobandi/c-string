@@ -136,21 +136,22 @@ static int data(const str_t *self, const char **data) {
 static int cat(str_t *self, const str_t *src) {
 	if (!self || !src) return 1;
 
-	unsigned long *len = &self->priv->len;
-	unsigned long *capacity = &self->priv->capacity;
-	unsigned long old_len = *len;
+	unsigned long len = self->priv->len;
+	unsigned long capacity = self->priv->capacity;
 	unsigned long src_len = src->priv->len;
-	*len = src_len + old_len + 1;
+	unsigned long new_len = len + src_len;
+	if (new_len + 1 > capacity) {
+		capacity = (unsigned long)((float)new_len * 1.5f);
+		if (_realloc(self, capacity)) return 1;
+	}
 	char *data = self->priv->data;
 	char *src_data = src->priv->data;
 
-	if (*len > *capacity) {
-		*capacity = (unsigned long)((float)*len * 1.5f);
-		if (_realloc(self, *capacity)) return 1;
-	}
+	memcpy(&data[len], src_data, sizeof(char) * src_len);
+	data[new_len] = '\0';
 
-	memcpy(&data[old_len], src_data, sizeof(char) * (src_len));
-	data[*len] = '\0';
+	self->priv->capacity = capacity;
+	self->priv->len = new_len;
 
 	return 0;
 }
@@ -234,6 +235,7 @@ static int pop(str_t *self, char *c) {
 	}
 
 	(*len)--;
+	self->priv->data[*len] = '\0';
 
 	return 0;
 }
