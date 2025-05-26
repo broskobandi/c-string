@@ -16,7 +16,9 @@ cd c-string
 
 Create make files:
 ```bash
-cd build && cmake ..
+mkdir build &&
+cd build &&
+cmake ..
 ```
 
 Compile and install library:
@@ -89,4 +91,13 @@ int main(void) {
 
     return 0;
 }
+```
+
+## Testing
+```bash
+mkdir tests/build &&
+cd tests/build &&
+cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
+make &&
+./unint_test
 ```
