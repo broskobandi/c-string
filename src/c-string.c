@@ -9,7 +9,6 @@
  * Implementation for c-string
  */
 
-// #include "../include/c-string.h"
 #include "../include/c-string.h"
 #include <stdlib.h>
 #include <string.h>
