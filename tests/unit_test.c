@@ -28,7 +28,7 @@ void print_test_result(const test_t *test) {
  * Unit tests for c-string
  * */
 
-int test_str_new_and_destroy() {
+int test_new_and_destroy() {
 	{
 		STR_AUTO_T *str = STR_NEW;
 		if (!str) return 1;
@@ -38,7 +38,7 @@ int test_str_new_and_destroy() {
 	return 0;
 }
 
-int test_str_new_from_and_data() {
+int test_new_from_and_data() {
 	const char *data = "Some text";
 	STR_AUTO_T *str = STR_NEW_FROM(data);
 	if (!str) return 1;
@@ -46,7 +46,7 @@ int test_str_new_from_and_data() {
 	return 0;
 }
 
-int test_str_cat() {
+int test_cat() {
 	const char *data1 = "Some ";
 	STR_AUTO_T *str1 = STR_NEW_FROM(data1);
 	const char *data2 = "text";
@@ -56,7 +56,7 @@ int test_str_cat() {
 	return 0;
 }
 
-int test_str_replace() {
+int test_replace() {
 	STR_AUTO_T *str = STR_NEW_FROM("Some long and interesting text with long and interesting words");
 	STR_REPLACE(str, "interesting", "fun");
 	if (strcmp(STR_DATA(str), "Some long and fun text with long and fun words") != 0) return 1;
@@ -89,10 +89,10 @@ int test_len_and_capacity() {
 int main(void) {
 	test_t test = {0};
 
-	ASSERT(test_str_new_and_destroy() == 0);
-	ASSERT(test_str_new_from_and_data() == 0);
-	ASSERT(test_str_cat() == 0);
-	ASSERT(test_str_replace() == 0);
+	ASSERT(test_new_and_destroy() == 0);
+	ASSERT(test_new_from_and_data() == 0);
+	ASSERT(test_cat() == 0);
+	ASSERT(test_replace() == 0);
 	ASSERT(test_push_and_pop() == 0);
 	ASSERT(test_pop_underflow() == 1);
 	ASSERT(test_len_and_capacity() == 0);
