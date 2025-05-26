@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.30.1)
+project(unit_test)
+include_directories(../include)
+add_compile_options(-Wall -Wextra -Werror -Wconversion -Wunused-result)
+add_executable(unit_test unit_test.c ../src/c-string.c)

@@ -1,2 +1,2 @@
 # c-string
-Simple dynamic string for C
+Dynamic string for C that aims to be type and memory safe.
