@@ -1,141 +1,74 @@
+// #define NDEBUG
+
 #include "../include/c-string.h"
+#include "../include/c-string-macros-wrappers.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
 
-typedef struct test {
-	unsigned int completed;
-	unsigned int passed;
-	unsigned int failed;
-} test_t;
-
-void print_test_result(const test_t *test) {
-	printf("\nCompleted:\t%d\n", test->completed);
-	printf("Passed:\t\t%d\n", test->passed);
-	printf("Failed:\t\t%d\n\n", test->failed);
-}
+uint completed = 0;
+uint passed = 0;
+uint failed = 0;
 
 #define ASSERT(expr)\
 	if (!(expr)) {\
-		printf("[FAILED]: %s\n", #expr);\
-		test.failed++;\
+		printf("***[FAILED]: %s\n", #expr);\
+		failed++;\
 	} else {\
 		printf("[PASSED]: %s\n", #expr);\
-		test.passed++;\
+		passed++;\
 	}\
-	test.completed++;
+	completed++;
 
-/**
- * Unit tests for c-string
- * */
+void print_results() {
+	if (!failed) {
+		printf("\nCompleted tests: %d\n", completed);
+		printf("All tests passed.\n");
+	} else {
+		printf("\nCompleted:\t%d\n", completed);
+		printf("Passed:\t\t%d\n", passed);
+		printf("Failed:\t\t%d\n", failed);
+	}
+}
 
-int test_new_and_destroy() {
+// Tests
+
+int test_str_new() {
 	{
-		STR_AUTO_T *str = STR_NEW;
-		if (!str) return 1;
-		is_str_destroyed = 0;
+		STR_AUTO_T str = STR_NEW;
+		ASSERT(str != NULL);
+		is_str_destroyed = false;
 	}
-	if (is_str_destroyed != 1) return 1;
-	return 0;
+	ASSERT(is_str_destroyed == true);
+	return STR_SUCCESS;
 }
 
-int test_new_from_and_data() {
-	const char *data = "Some text";
-	STR_AUTO_T *str = STR_NEW_FROM(data);
-	if (!str) return 1;
-	if (strcmp(data, STR_DATA(str)) != 0) return 1;
-	return 0;
+int test_str_new_from() {
+	STR_AUTO_T str = STR_NEW_FROM("Some text");
+	ASSERT(str != NULL);
+	ASSERT(strcmp(STR_DATA(str), "Some text") == 0);
+	return STR_SUCCESS;
 }
 
-int test_new_from_file() {
-	const char *path = "../CMakeLists.txt";
-	STR_AUTO_T *str = STR_NEW_FROM_FILE("../CMakeLists.txt");
-	char file_content[512];
-	char c;
-	FILE *file = fopen(path, "r");
-	if (!file) return 1;
-	int i = 0;
-	while ((c = (char)fgetc(file)) != EOF) {
-		file_content[i] = c;
-		i++;
-	}
-	file_content[i] = '\0';
-	if (strcmp(file_content, STR_DATA(str)) != 0) return 1;
-	printf("%s\n", file_content);
-	fclose(file);
-	return 0;
+int test_str_replace() {
+	STR_AUTO_T str = STR_NEW_FROM("Some long long text");
+	STR_REPLACE(str, "long", "great");
+	ASSERT(strcmp(STR_DATA(str), "Some great great text") == 0);
+	return STR_SUCCESS;
 }
 
-int test_cat() {
-	const char *data1 = "Some ";
-	STR_AUTO_T *str1 = STR_NEW_FROM(data1);
-	const char *data2 = "text";
-	// STR_AUTO_T *str2 = STR_NEW_FROM(data2);
-	STR_CAT(str1, data2);
-	if (strcmp(STR_DATA(str1), "Some text") != 0) return 1;
-	return 0;
-}
-
-int test_replace() {
-	STR_AUTO_T *str = STR_NEW_FROM("Some long and interesting text with long and interesting words");
-	STR_REPLACE(str, "interesting", "fun");
-	if (strcmp(STR_DATA(str), "Some long and fun text with long and fun words") != 0) return 1;
-	return 0;
-}
-
-int test_push_and_pop() {
-	STR_AUTO_T *str = STR_NEW;
-	STR_PUSH(str, 'a');
-	if (STR_POP(str) != 'a') return 1;
-	return 0;
-}
-
-int test_pop_underflow() {
-	STR_AUTO_T *str = STR_NEW;
-	STR_POP(str);
-	return 0;
-}
-
-int test_len_and_capacity() {
-	const char *text = "Some text";
-	STR_AUTO_T *str = STR_NEW_FROM(text);
-	unsigned long expected_capacity = (unsigned long)((float)strlen(text) * 1.5f);
-	unsigned long expected_len = strlen(text);
-	if (STR_LEN(str) != expected_len) return 1;
-	if (STR_CAPACITY(str) != expected_capacity) return 1;
-	return 0;
-}
-
-int test_clear() {
-	STR_AUTO_T *str = STR_NEW_FROM("Some text");
-	unsigned long old_len = STR_LEN(str);
-	STR_CLEAR(str);
-	unsigned long new_len = STR_LEN(str);
-	if (old_len == new_len) return 1;
-	if (new_len != 0) return 1;
-	return 0;
-}
-
-int test_get() {
-	STR_AUTO_T *str = STR_NEW_FROM("Some text");
-	if (STR_GET(str, 3) != 'e') return 1;
-	return 0;
+int test_str_cmp() {
+	STR_AUTO_T str = STR_NEW_FROM("Some text");
+	ASSERT(STR_CMP(str, "Some text") == true);
+	return STR_SUCCESS;
 }
 
 int main(void) {
-	test_t test = {0};
+	TRY(test_str_new());
+	TRY(test_str_new_from());
+	TRY(test_str_replace());
+	TRY(test_str_cmp());
 
-	ASSERT(test_new_and_destroy() == 0);
-	ASSERT(test_new_from_and_data() == 0);
-	ASSERT(test_new_from_file() == 0);
-	ASSERT(test_cat() == 0);
-	ASSERT(test_replace() == 0);
-	ASSERT(test_push_and_pop() == 0);
-	ASSERT(test_pop_underflow() == 1);
-	ASSERT(test_len_and_capacity() == 0);
-	ASSERT(test_clear() == 0);
-	ASSERT(test_get() == 0);
-
-	print_test_result(&test);
+	print_results();
 	return 0;
 }
-
