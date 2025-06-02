@@ -4,5 +4,5 @@ add_compile_options(-Wall -Wextra -Werror -Wconversion -Wunused-result)
 add_executable(
 	unit-test
 	unit-test.c
-	../src/str.c
+	../src/c-string.c
 )
