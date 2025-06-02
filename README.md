@@ -8,8 +8,9 @@ cmake version 3.30+ is necessary for building and installing the library and the
 Clone and cd into the repo, generate make files, compile the library file and install the library and the corresponding header file into your system's lib and include dirs with the following command:
 ```bash
 git clone https://github.com/broskobandi/c-string.git &&
+mkdir c-string/build &&
 cd c-string/build &&
-cmake .. &&
+cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
 make &&
 sudo make install
 ```
@@ -95,4 +96,13 @@ int main(void) {
 
     return 0;
 }
+```
+To run the unit tests provided, run the following command in the root directory of the cloned repo.
+## Testing
+```bash
+mkdir tests/build &&
+cd tests/build &&
+cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
+make &&
+./unit-test
 ```
