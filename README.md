@@ -97,8 +97,8 @@ int main(void) {
     return 0;
 }
 ```
-To run the unit tests provided, run the following command in the root directory of the cloned repo.
 ## Testing
+To run the unit tests provided, run the following command in the root directory of the cloned repo.
 ```bash
 mkdir tests/build &&
 cd tests/build &&
