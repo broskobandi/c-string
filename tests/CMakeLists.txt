@@ -6,3 +6,4 @@ add_executable(
 	unit-test.c
 	../src/c-string.c
 )
+target_include_directories(unit-test PUBLIC ../include)
