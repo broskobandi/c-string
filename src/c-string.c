@@ -1,158 +1,248 @@
-#include "../include/c-string.h"
-#include <stdio.h>
-#include <sys/types.h>
+/*
+MIT License
+
+Copyright (c) 2025 broskobandi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#include "c-string.h"
 #include <stdlib.h>
 #include <string.h>
 
-// String object
-struct str_priv {
+// str opaque struct definition:
+
+struct str {
 	char *data;
-	ulong len;
 	ulong capacity;
+	ulong len;
 };
+
+// Factory functions:
 
 #define DEFAULT_CAPACITY 16
 
-// Associated function forward declarations
-static str_status_t data(const str_t *self, const char **dest);
-static str_status_t replace(str_t *self, const char *old_str, const char *new_str);
-static str_status_t cmp(const str_t *self, const char *src, bool *is_same);
-
-// Helpers
-static str_status_t _alloc(str_t **str, ulong capacity) {
-	*str = calloc(1, sizeof(str_t));
-	if (!*str) return STR_ALLOC_FAILURE;
-	(*str)->priv = calloc(1, sizeof(str_priv_t));
-	if (!(*str)->priv) {
-		free(*str);
-		return STR_ALLOC_FAILURE;
+str_t *str_new() {
+	str_t *str = calloc(1, sizeof(str_t));
+	if (!str) return NULL;
+	str->data = calloc(DEFAULT_CAPACITY, sizeof(char));
+	if (!str->data) {
+		free(str);
+		return NULL;
 	}
-	(*str)->priv->data = calloc(capacity, sizeof(char));
-	if (!(*str)->priv->data) {
-		free((*str)->priv);
-		free(*str);
-		return STR_ALLOC_FAILURE;
-	}
-	return STR_SUCCESS;
+	str->capacity = DEFAULT_CAPACITY;
+	str->len = 0;
+	return str;
 }
 
-static void _init_str(str_t *str, ulong c, ulong l) {
-	str->priv->capacity = c;
-	str->priv->len = l;
-	str->data = data;
-	str->replace = replace;
-	str->cmp = cmp;
-}
-
-static int _realloc(str_t *str, ulong capacity) {
-	char *tmp = realloc(str->priv->data, capacity * sizeof(char));
-	if (!tmp) return STR_REALLOC_FAILURE;
-	str->priv->data = tmp;
-	return STR_SUCCESS;
-}
-
-// Factory functions
-str_status_t str_new(str_t **str) {
-	if (*str) return STR_NOT_EMPTY;
-	TRY(_alloc(str, DEFAULT_CAPACITY));
-	_init_str(*str, DEFAULT_CAPACITY, 0);
-	return STR_SUCCESS;
-}
-
-str_status_t str_new_from(str_t **str, const char *src) {
-	if (*str) return STR_NOT_EMPTY;
-	if (!src) return STR_NULL_PTR;
+str_t *str_new_from(const char *src) {
+	str_t *str = calloc(1, sizeof(str_t));
+	if (!str) return NULL;
 	ulong len = strlen(src);
 	ulong capacity = len < 128 ? len * 2 : (ulong)((float)len * 1.5f);
-	TRY(_alloc(str, capacity));
-	_init_str(*str, capacity, strlen(src));
-	strcpy((*str)->priv->data, src);
-	return STR_SUCCESS;
+	str->data = calloc(capacity, sizeof(char));
+	if (!str->data) {
+		free(str);
+		return NULL;
+	}
+	str->capacity = capacity;
+	str->len = len;
+	strcpy(str->data, src);
+	return str;
 }
 
-bool is_str_destroyed = 0;
+bool is_str_destroyed = false;
 void str_destroy(str_t **str) {
-	if (*str && str) {
-		if ((*str)->priv) {
-			if ((*str)->priv->data) {
-				free((*str)->priv->data);
-			}
-			free((*str)->priv);
-		}
+	if (str && *str) {
+		if ((*str)->data)
+			free((*str)->data);
 		free(*str);
 		*str = NULL;
-		is_str_destroyed = 1;
+		is_str_destroyed = true;
 	}
 }
 
-// Associated function declarations
-static str_status_t data(const str_t *self, const char **dest) {
-	if (!self) return STR_NULL_PTR;
-	*dest = self->priv->data;
-	return STR_SUCCESS;
+// Helper functions:
+
+static int _realloc(str_t *str, ulong len, ulong *capacity) {
+	if (!str || !str->data) return 1;
+	ulong new_capacity = *capacity;
+	if (len + 1 > *capacity) {
+		new_capacity =
+			*capacity < 128 ? *capacity * 2 : (ulong)((float)*capacity * 1.5f);
+	} else if (len + 1 < *capacity / 2) {
+		new_capacity = *capacity / 2;
+	}
+	if (new_capacity != *capacity) {
+		*capacity = new_capacity;
+		char *tmp = realloc(str->data, *capacity * sizeof(char));
+		if (!tmp) return 1;
+		str->data = tmp;
+	}
+
+	return 0;
 }
 
-static str_status_t replace(str_t *self, const char *old_str, const char *new_str) {
-	if (!self || !old_str || !new_str) return STR_NULL_PTR;
-	// Local vars
-	ulong len = self->priv->len;
-	ulong capacity = self->priv->capacity;
-	char *data = self->priv->data;
+// Functions that operate over the string object:
 
-	// Get num occurrences
+const char *str_data(const str_t *str) {
+	if (!str || !str->data) return NULL;
+	return str->data;
+}
+
+int str_replace(str_t *str, const char *old_str, const char *new_str) {
+	if (!str || !old_str || !new_str) return 1;
+
+	// Local vars
+	ulong len = str->len;
+	ulong capacity = str->capacity;
+	ulong old_str_len = strlen(old_str);
+	ulong new_str_len = strlen(new_str);
+
+	// Num occurrecnes
 	ulong count = 0;
-	for (int i = 0; data[i] != '\0'; i++) {
-		if (strstr(&data[i], old_str) == &data[i]) {
+	for (ulong i = 0; str->data[i] != '\0'; i++) {
+		if (strstr(&str->data[i], old_str) == &str->data[i]) {
 			count++;
 			i += strlen(old_str) - 1;
 		}
 	}
 
-	// Update len
-	len = len - (strlen(old_str) * count) + (strlen(new_str) * count);
+	if (!count) return 0;
 
-	// Update capacity and realloc if necessary
-	if (len > capacity) {
-		capacity = len + 1 < 128 ? (len + 1) * 2 : (ulong)((float)(len + 1) * 1.5f);
-		TRY(_realloc(self, capacity));
-	} else if (len < capacity) {
-		if (len + 1 < capacity / 2) {
-			capacity /= 2;
-			TRY(_realloc(self, capacity));
-		}
-	}
-
-	// Create result string
-	char *result = malloc(len + 1);
+	// Result string
+	len = len - (old_str_len * count) + (new_str_len * count);
+	char *result = malloc(len + 1 * sizeof(char));
 	ulong data_i = 0;
 	ulong result_i = 0;
-	while (data[data_i] != '\0') {
-		if (strstr(&data[data_i], old_str) == &data[data_i]) {
-			for (ulong i = 0; i < strlen(new_str); i++) {
+	while (str->data[data_i] != '\0') {
+		if (strstr(&str->data[data_i], old_str) == &str->data[data_i]) {
+			for (ulong i = 0; i < new_str_len; i++) {
 				result[result_i] = new_str[i];
 				result_i++;
 			}
-			data_i += strlen(old_str);
+			data_i += old_str_len;
 		} else {
-			result[result_i] = data[data_i];
+			result[result_i] = str->data[data_i];
 			result_i++;
 			data_i++;
 		}
 	}
 	result[result_i] = '\0';
 
-	// Update string data
-	strcpy(data, result);
+	// Realloc
+	if (_realloc(str, len, &capacity)) {
+		free(result);
+		return 1;
+	}
+
+	// Update values
+	strcpy(str->data, result);
+	str->capacity = capacity;
+	str->len = len;
 	free(result);
-	return STR_SUCCESS;
+
+	return 0;
 }
 
-static str_status_t cmp(const str_t *self, const char *src, bool *is_same) {
-	if (!self || !src || !is_same) return STR_NULL_PTR;
-	if (strcmp(self->priv->data, src) == 0) {
-		*is_same = true;
+int str_len(const str_t *str) {
+	if (!str || !str->data) return -1;
+	return (int)str->len;
+}
+
+int str_capacity(const str_t *str) {
+	if (!str || !str->data) return -1;
+	return (int)str->capacity;
+}
+
+int str_push(str_t *str, char c) {
+	if (!str || !str->data) return 1;
+	ulong len = str->len;
+	ulong capacity = str->capacity;
+
+	len++;
+	if (_realloc(str, len, &capacity)) return 1;
+
+	str->data[len - 1] = c;
+	str->data[len] = '\0';
+	str->capacity = capacity;
+	str->len = len;
+
+	return 0;
+}
+
+char str_pop(str_t *str) {
+	if (!str || !str->data) return -1;
+	ulong len = str->len;
+	ulong capacity = str->len;
+	char c = str->data[len - 1];
+
+	len--;
+	if (_realloc(str, len, &capacity)) return -1;
+
+	str->data[len] = '\0';
+	str->len = len;
+	str->capacity = capacity;
+
+	return c;
+}
+
+int str_cmp(const str_t *str1, const char *str2) {
+	if (!str1 || !str1->data || !str2) return -1;
+	int result = -1;
+	if (strcmp(str1->data, str2) == 0) {
+		result = 1;
 	} else {
-		*is_same = false;
+		result = 0;
 	}
-	return STR_SUCCESS;
+	return result;
+}
+
+const char *str_append(str_t *str, const char *src) {
+	if (!str || !src || !str->data) return NULL;
+	ulong len = str->len;
+	ulong capacity = str->len;
+	ulong src_len = strlen(src);
+	ulong old_len = len;
+
+	len = len + src_len;
+	if (_realloc(str, len, &capacity)) return NULL;
+
+	memcpy(&str->data[old_len], src, src_len);
+	str->data[len] = '\0';
+
+	str->len = len;
+	str->capacity = capacity;
+
+	return str->data;
+}
+
+int str_clear(str_t *str) {
+	if (!str || !str->data) return 1;
+	memset(str->data, 0, str->capacity * sizeof(char));
+	str->len = 0;
+	if (str->capacity != DEFAULT_CAPACITY) {
+		char *tmp = realloc(str->data, DEFAULT_CAPACITY * sizeof(char));
+		if (!tmp) return 1;
+		str->data = tmp;
+		str->capacity = DEFAULT_CAPACITY;
+	}
+
+	return 0;
 }
