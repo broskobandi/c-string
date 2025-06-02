@@ -188,7 +188,7 @@ int str_push(str_t *str, char c) {
 }
 
 char str_pop(str_t *str) {
-	if (!str || !str->data) return -1;
+	if (!str || !str->data || !str->len) return -1;
 	ulong len = str->len;
 	ulong capacity = str->len;
 	char c = str->data[len - 1];
