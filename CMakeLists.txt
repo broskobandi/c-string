@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.30)
-project(c-string VERSION 3.0.0 LANGUAGES C)
-add_library(c-string STATIC src/c-string.c)
-target_include_directories(c-string PUBLIC include)
-install(TARGETS c-string DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include)
