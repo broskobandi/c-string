@@ -55,8 +55,8 @@ static str_status_t capacity(const str_t *self, ulong *capacity);
 static str_status_t push(str_t *self, char c);
 static str_status_t pop(str_t *self, char *c);
 static str_status_t clear(str_t *self);
-static str_status_t cmp(const str_t *self, const char *src, bool *is_same);
-static str_status_t has(const str_t *self, const char *src, bool *has);
+static str_status_t cmp(const str_t *self, const char *pattern, bool *is_same);
+static str_status_t has(const str_t *self, const char *pattern, bool *has);
 
 // Function definitions
 
@@ -201,7 +201,6 @@ static str_status_t replace(str_t *self, const char *old_str, const char *new_st
 
 	result[result_i] = '\0';
 
-
 	str_status_t status = _handle_realloc(self, old_capacity, &new_capacity, new_len);
 	if (status) return status;
 	data = self->priv->data;
@@ -287,6 +286,8 @@ static str_status_t clear(str_t *self) {
 	ulong old_capacity = self->priv->capacity;
 	ulong new_capacity = DEFAULT_CAPACITY;
 
+	memset(self->priv->data, 0, old_capacity * sizeof(char));
+
 	if (old_capacity != new_capacity) {
 		char *tmp = (char*)realloc(self->priv->data, new_capacity);
 		if (!tmp) return STR_REALLOC_ERROR;
@@ -299,10 +300,10 @@ static str_status_t clear(str_t *self) {
 	return STR_SUCCESS;
 }
 
-static str_status_t cmp(const str_t *self, const char *src, bool *is_same) {
-	if (!self || !src) return STR_NULL_PTR;
+static str_status_t cmp(const str_t *self, const char *pattern, bool *is_same) {
+	if (!self || !pattern) return STR_NULL_PTR;
 
-	if (strcmp(self->priv->data, src) == 0) {
+	if (strcmp(self->priv->data, pattern) == 0) {
 		*is_same = true;
 	} else {
 		*is_same = false;
@@ -311,10 +312,10 @@ static str_status_t cmp(const str_t *self, const char *src, bool *is_same) {
 	return STR_SUCCESS;
 }
 
-static str_status_t has(const str_t *self, const char *src, bool *has) {
-	if (!self || !src) return STR_NULL_PTR;
+static str_status_t has(const str_t *self, const char *pattern, bool *has) {
+	if (!self || !pattern) return STR_NULL_PTR;
 
-	if (strstr(self->priv->data, src)) {
+	if (strstr(self->priv->data, pattern)) {
 		*has = true;
 	} else {
 		*has = false;

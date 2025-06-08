@@ -211,29 +211,29 @@ typedef struct str_priv str_priv_t;
 		TRY(str->clear(str));\
 	 } while (0)
 
-#define str_cmp(str, src)\
+#define str_cmp(str, pattern)\
 	\
-	/* Compares contents of 'str' and 'src'.
+	/* Compares contents of 'str' and 'pattern'.
 	 * Returns a boolean indicating whether they are identical.
 	 * Returns early from the caller with a status code on failure.*/\
 	\
 	({\
 	 	if (!str) return STR_NULL_PTR;\
 		bool is_same;\
-		TRY(str->cmp(str, src, &is_same));\
+		TRY(str->cmp(str, pattern, &is_same));\
 		is_same;\
 	})
 
-#define str_has(str, src)\
+#define str_has(str, pattern)\
 	\
-	/* Checks if 'src' is present in 'str' and returns a boolean
+	/* Checks if 'pattern' is present in 'str' and returns a boolean
 	 * that indicates the result.
 	 * Returns early from the caller with a status code on failure.*/\
 	\
 	({\
 	 	if (!str) return STR_NULL_PTR;\
 		bool has;\
-		TRY(str->has(str, src, &has));\
+		TRY(str->has(str, pattern, &has));\
 		has;\
 	})
 
@@ -278,13 +278,13 @@ struct str {
 	MUST_USE_RESULT
 	str_status_t (*clear)(str_t *self);
 
-	/* Compares str with 'src' and sets 'is_same' to true if they are the same. */
+	/* Compares str with 'pattern' and sets 'is_same' to true if they are the same. */
 	MUST_USE_RESULT
-	str_status_t (*cmp)(const str_t *self, const char *src, bool *is_same);
+	str_status_t (*cmp)(const str_t *self, const char *pattern, bool *is_same);
 
-	/* Checks if str has 'src' in it and sets 'has' to true of so. */
+	/* Checks if str has 'pattern' in it and sets 'has' to true of so. */
 	MUST_USE_RESULT
-	str_status_t (*has)(const str_t *self, const char *src, bool *has);
+	str_status_t (*has)(const str_t *self, const char *pattern, bool *has);
 };
 
 /* Creates new instance of str_t.
