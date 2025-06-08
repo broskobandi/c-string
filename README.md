@@ -12,6 +12,7 @@ gcc or clang is required for using the macro wrappers.
 ```bash
 git clone https://github.com/broskobandi/c-string.git &&
 mkdir c-string/build &&
+cd c-string/build &&
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
 make &&
 sudo make install
@@ -159,6 +160,8 @@ STR_NULL_PTR = 5
 ## Testing
 In the root directory of the cloned repository run:
 ```bash
+mkdir build &&
+cd build &&
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
 make &&
 ./tests/unit-test
