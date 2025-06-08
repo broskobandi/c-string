@@ -160,7 +160,7 @@ STR_NULL_PTR = 5
 ## Testing
 In the root directory of the cloned repository run:
 ```bash
-mkdir build &&
+mkdir build -p &&
 cd build &&
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=on &&
 make &&
