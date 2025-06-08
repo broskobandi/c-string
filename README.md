@@ -77,7 +77,7 @@ int main(void) {
 	return 0;
 }
 ```
-### Without macros (more verbose but more portable. Pure C)
+### Without gcc/clang specific macros (more verbose but more portable. Pure C)
 ```c
 #include <c-string.h>
 
