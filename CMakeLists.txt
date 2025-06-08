@@ -3,4 +3,4 @@ project(c-string VERSION 4.0.0 LANGUAGES C)
 add_compile_options(-Wall -Wextra -Werror -Wconversion -Wunused-result)
 add_library(c-string STATIC ${PROJECT_SOURCE_DIR}/src/c-string.c)
 target_include_directories(c-string PUBLIC ${PROJECT_SOURCE_DIR}/include)
-
+add_subdirectory(tests)

@@ -287,7 +287,8 @@ struct str {
 	str_status_t (*has)(const str_t *self, const char *src, bool *has);
 };
 
-/* Creates new instance of str_t */
+/* Creates new instance of str_t.
+ * 'str' must be NULL! */
 MUST_USE_RESULT
 str_status_t _str_new(str_t **str);
 

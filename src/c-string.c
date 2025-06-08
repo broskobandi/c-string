@@ -128,17 +128,14 @@ static void _init(str_t *str, ulong c) {
 static str_status_t _handle_realloc(
 	str_t *str, ulong old_capacity, ulong *new_capacity, ulong new_len
 ) {
-	// Expand capacity if necessary
 	while (new_len + 1 > *new_capacity) {
 		*new_capacity *= 2;
 	}
 
-	// Shrink capacity if necessary
 	if (new_len + 1 < *new_capacity / 2 && *new_capacity / 2 >= DEFAULT_CAPACITY) {
 		*new_capacity /= 2;
 	}
 
-	// Realloc memory if necessary
 	if (*new_capacity != old_capacity) {
 		char *tmp = (char*)realloc(str->priv->data, *new_capacity * sizeof(char));
 		if (!tmp) return STR_REALLOC_ERROR;
@@ -170,6 +167,7 @@ static str_status_t append(str_t *self, const char *src) {
 
 static str_status_t replace(str_t *self, const char *old_str, const char *new_str) {
 	if (!self || !old_str || !new_str) return STR_NULL_PTR;
+	if (!strlen(old_str)) return STR_EMPTY;
 
 	ulong old_len = self->priv->len;
 	ulong old_capacity = self->priv->capacity;
@@ -187,14 +185,10 @@ static str_status_t replace(str_t *self, const char *old_str, const char *new_st
 
 	ulong data_i = 0;
 	ulong result_i = 0;
-	char *result = malloc(new_len + 1);
+	char *result = malloc((new_len + 1) * sizeof(char));
 
 	while (data[data_i] != '\0') {
 		if (strstr(&data[data_i], old_str) == &data[data_i]) {
-			// for (int i = 0; i < strlen(new_str); i++) {
-			// 	result[result_i] = new_str[i];
-			// 	result_i++;
-			// }
 			strcpy(&result[result_i], new_str);
 			result_i += strlen(new_str);
 			data_i += strlen(old_str);
@@ -207,8 +201,10 @@ static str_status_t replace(str_t *self, const char *old_str, const char *new_st
 
 	result[result_i] = '\0';
 
+
 	str_status_t status = _handle_realloc(self, old_capacity, &new_capacity, new_len);
 	if (status) return status;
+	data = self->priv->data;
 
 	strcpy(data, result);
 
