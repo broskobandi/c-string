@@ -39,7 +39,7 @@ int test_str_new_empty() {
 
 int test_str_new_not_empty() {
 	str_auto str = str_new();
-	str_status_t status = _str_new(&str);
+	str_status_t status = create_str(&str);
 	ASSERT(status == STR_NOT_EMPTY);
 	return 0;
 }

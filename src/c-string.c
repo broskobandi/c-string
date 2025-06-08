@@ -62,7 +62,7 @@ static str_status_t has(const str_t *self, const char *pattern, bool *has);
 
 // Constructor
 
-str_status_t _str_new(str_t **str) {
+str_status_t create_str(str_t **str) {
 	if (*str) return STR_NOT_EMPTY;
 
 	str_status_t status = _alloc(str, DEFAULT_CAPACITY);

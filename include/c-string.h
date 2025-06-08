@@ -111,7 +111,7 @@ typedef struct str_priv str_priv_t;
 	\
 	({\
 	 	str_t *str = NULL;\
-		TRY(_str_new(&str));\
+		TRY(create_str(&str));\
 	 	const char *args[] = {__VA_ARGS__};\
 		uint num_args = sizeof(args) / sizeof(char*);\
 		for (uint i = 0; i < num_args; i++) {\
@@ -290,7 +290,7 @@ struct str {
 /* Creates new instance of str_t.
  * 'str' must be NULL! */
 MUST_USE_RESULT
-str_status_t _str_new(str_t **str);
+str_status_t create_str(str_t **str);
 
 /* Frees all memory allocated in 'str' */
 void str_destroy(str_t **str);
