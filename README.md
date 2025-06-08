@@ -147,12 +147,14 @@ int main(void) {
 The library currently doesn't have a mechanism to print the returned status code.
 If something goes wrong, check the returned status code against the following list:
 
+```bash
 STR_SUCCESS = 0
 STR_ALLOC_ERROR = 1
 STR_REALLOC_ERROR = 2
 STR_NOT_EMPTY = 3
 STR_EMPTY = 4
 STR_NULL_PTR = 5
+```
 
 ## Testing
 In the root directory of the cloned repository run:
